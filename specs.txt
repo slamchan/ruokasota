@@ -1,0 +1,41 @@
+- Api statseiks
+    100 grammaa sisältää:
+
+    Energia (kcal) = Health Points eli kestopisteet.
+    ilihydraatit (g) = Hyökkäysvoima
+    Proteiinit (g) = Puolustusvoima (voidaan käyttää esim. prosentuaalisesti, koska maksimi on tietty 100)
+    Rasvat ei erikseen lisää mitään statsia, mutta enemmän rasvaa = enemmän energiaa = enemmän helaa
+    Hiilihydraattien, rasvojen ja proteiinien yhteenlaskettu grammamäärä = Hitaus. (tai käänteisellä arvolla hyökkäysnopeus)
+
+- Kuvat ruuille
+    -Paint
+- Taistelulogiikka
+    - Palvelin laskee taistelun tuloksen, lähettää tuloksen
+- XP ja valuutta
+    - Parantaa(?) statteja tresholdeilla (modifier), voi antaa vaikka crit% ja block%/dodge%
+    - Paremmat hahmot maksaa enemmän jotain pisteitä
+- "Esineet"
+    - Kastike
+        - Ruskeakastike, chilikastike, ...
+    - Valmistustapa
+        - Paisto, uppopaisto, grillaus, salaatti
+    - Mauste
+        - Pippuri, suola, paprikajauhe, chilijauhe
+    - Antaa modifiereita
+
+
+- palvelinkommunikointi
+    - omat statsit (1 json)
+    - taisteluun lähetetään taistelijoiden tiedot, vastaanotetaan lopputulos
+        - lopputulos sisältää taistelun vaiheet tekstinä, voittaja, valuutta, 
+    - esineiden ja sotureiden haku ja osto
+
+- Pelaajan tietoja:
+    - Soturit
+    - Esineet
+    - Valuutta
+    - XP
+    - UUID / load key
+
+- Backend expressJS
+- ReactJS
