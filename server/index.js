@@ -19,10 +19,10 @@ app.get('/getCarrots/:query', async (req, res) => {
 
       return res.data.map(({ name, energy, protein, fat, carbohydrate }) => ({
         name: name.fi,
-        energy,
-        protein,
-        fat,
-        carbohydrate,
+        hp: energy,
+        def: protein,
+        delay: protein + fat + carbohydrate,
+        att: carbohydrate,
       }));
     })
     .catch(err => {
@@ -40,9 +40,9 @@ app.get('/load', (req, res) => {
 app.post('/combat', (req, res) => {
   const { attacker, defender } = req;
   const hit = (hitter, defender) => {
-    const damage = hitter.att * defender.def;
+    const damage = hitter.att * (1 - defender.def);
     defender.hp -= damage;
-    return { damage, hpLeft: defender.hp };
+    return { attacker: attacker.name, damage, hpLeft: defender.hp };
   };
 
   const victoryTime = (attacker, defender) => {
