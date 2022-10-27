@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import Home from './common/index';
 
 const App = () => {
@@ -8,11 +8,11 @@ const App = () => {
 
   return (
     <React.Fragment>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/*" element={<Home />} />
-          </Routes>
-        </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/*" element={<Home />} />
+        </Routes>
+      </BrowserRouter>
     </React.Fragment>
   );
 };

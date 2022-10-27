@@ -11,7 +11,7 @@
   },
   "plugins": ["react"],
   "rules": {
-    "semi": [2, "always"],
-    "space-before-function-paren": ["error", "never"]
+    "semi": "off",
+    "space-before-function-paren": "off"
   }
 }
