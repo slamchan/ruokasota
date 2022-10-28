@@ -48,7 +48,7 @@ app.post('/combat', (req, res) => {
   const victoryTime = (attacker, defender) => {
     let turns = 0;
     const combatLog = [];
-    while (defender.hp >= 0) {
+    while (defender.hp > 0) {
       turns++;
       combatLog.push({ ...hit(attacker, defender), timeStamp: attacker.delay * turns });
     }
