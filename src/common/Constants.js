@@ -1,5 +1,18 @@
 export const baseSpeed = 1;
 export const speedMultiplier = 3;
 
-export const testFighter = { energy: 33.0, carbs: 5.6, proteins: 0.6, fats: 0.2, name: 'Tomaatti' };
-export const testEnemyFighter = { energy: 65.0, carbs: 7.6, proteins: 0.2, fats: 0.1, name: 'Pottu' };
+export const testFighter = {
+  hp: 33.0,
+  att: 5.6,
+  def: 0.6,
+  delay: 0.2,
+  name: 'Tomaatti'
+};
+export const testEnemyFighter = {
+  hp: 65.0,
+  att: 7.6,
+  def: 0.2,
+  delay: 6,
+  name: 'Pottu'
+};
+export const serverBaseUrl = 'http://localhost:3001';

@@ -1,12 +1,13 @@
-import React from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
-import BattleView from "./battleView/BattleView";
-import ShopView from "./shopView/ShopView";
-import FightersView from "./fightersView/FightersView";
+import React from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Button } from '@mui/material';
+import BattleView from './battleView/BattleView';
+import ShopView from './shopView/ShopView';
+import FightersView from './fightersView/FightersView';
 
 const Home = () => {
   const navigate = useNavigate();
+  const user = { id: 0, money: 666 };
   return (
     <React.Fragment>
       <div className="bg-cyan-200 h-screen flex flex-row">
@@ -14,29 +15,29 @@ const Home = () => {
           <Button
             variant="contained"
             className="w-full"
-            onClick={() => navigate("/shop")}
+            onClick={() => navigate('/shop')}
           >
             Kauppa
           </Button>
           <Button
             variant="contained"
             className="w-full"
-            onClick={() => navigate("/battle")}
+            onClick={() => navigate('/battle')}
           >
             Taistele
           </Button>
           <Button
             variant="contained"
             className="w-full"
-            onClick={() => navigate("/fighters")}
+            onClick={() => navigate('/fighters')}
           >
             Taistelijat
           </Button>
         </div>
         <Routes>
-          <Route path="shop" element={<ShopView />} />
-          <Route path="battle" element={<BattleView />} />
-          <Route path="fighters" element={<FightersView />} />
+          <Route path="shop" element={<ShopView user={user} />} />
+          <Route path="battle" element={<BattleView user={user} />} />
+          <Route path="fighters" element={<FightersView user={user} />} />
         </Routes>
       </div>
     </React.Fragment>

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const FightersView = () => {
   return <React.Fragment>FightersView</React.Fragment>;
