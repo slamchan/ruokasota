@@ -21,7 +21,8 @@ const key = crypto.scryptSync(secret, 'GfG', 32);
 const iv = crypto.randomBytes(16);
 
 const encrypt = data => {
-  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+  if (!data) return;
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
   let encrypted = cipher.update(JSON.stringify(data));
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   return encrypted.toString('hex');
@@ -59,7 +60,7 @@ app.get('/getProfile', async (req, res) => {
 
 app.post('/start', (req, res) => {
   const { name } = req.body;
-  const profileData = { name, money: 100, fighters: [] };
+  const profileData = { name, money: 2000, fighters: [] };
   // TODO save to db
   res.send({ profile: encrypt(profileData) });
 });
@@ -70,7 +71,7 @@ app.post('/purchase', async (req, res) => {
 
   const { data } = await axios.get(`https://fineli.fi/fineli/api/v1/foods?q=${fighter.id}`).catch(e => new Error(e));
   const fetchedFighter = createFighter(data).filter(f => f.id === fighter.id)[0];
-  if (fetchedFighter.price <= profile.money) {
+  if (fetchedFighter.price <= profileData.money) {
     profileData.money -= fetchedFighter.price;
     profileData.fighters.push(fighter);
   }
@@ -78,7 +79,7 @@ app.post('/purchase', async (req, res) => {
   // TODO save to db
   res.send({ profile: encrypt(profileData) });
 });
-// POST method route
+
 app.post('/combat', (req, res) => {
   const { attacker, defender, profile } = req.body;
   const profileData = deCrypt(profile);
