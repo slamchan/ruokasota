@@ -17,15 +17,16 @@ app.use((req, res, next) => {
 
 const PORT = process.env.PORT || 3001;
 const secret = 'someamazingpassword';
+const iv = crypto.randomBytes(16);
 
 const encrypt = data => {
-  const mykey = crypto.createCipheriv('aes-128-cbc', secret);
+  const mykey = crypto.createCipheriv('aes-256-cbc', secret, iv);
   let cryptedData = mykey.update(JSON.stringify(data), 'utf8', 'hex');
   return (cryptedData += mykey.final('hex'));
 };
 
 const deCrypt = data => {
-  const mykey = crypto.createDecipheriv('aes-128-cbc', secret);
+  const mykey = crypto.createDecipheriv('aes-256-cbc', secret, iv);
   let cryptedData = mykey.update(data, 'hex', 'utf8');
   return (cryptedData += mykey.final('utf8'));
 };
