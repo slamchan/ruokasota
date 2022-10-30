@@ -86,7 +86,7 @@ app.post('/combat', (req, res) => {
   const profileData = deCrypt(profile);
   console.log({ profileData });
   const hit = (attacker, defender) => {
-    const damage = attacker.att * (100 - defender.def);
+    const damage = attacker.att * (1 - defender.def / 100);
     defender.hp -= damage;
     return { attacker: attacker.name, damage, hpLeft: defender.hp };
   };
