@@ -33,7 +33,7 @@ const deCrypt = data => {
   const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
   let decrypted = decipher.update(cryptedData);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
-  return JSON.parse(decrypted.toString());
+  return JSON.parse(decrypted.toString('utf-8'));
 };
 
 const createFighter = unhandledFoods =>
@@ -73,7 +73,7 @@ app.post('/purchase', async (req, res) => {
   const fetchedFighter = createFighter(data).filter(f => f.id === fighter.id)[0];
   if (fetchedFighter.price <= profileData.money) {
     profileData.money -= fetchedFighter.price;
-    profileData.fighters.push(fighter);
+    profileData.fighters.push(fetchedFighter);
   }
 
   // TODO save to db
