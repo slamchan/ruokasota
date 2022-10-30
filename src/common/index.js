@@ -11,7 +11,7 @@ const Home = () => {
   const [profile, setProfile] = useState(localStorage.getItem('profile'));
   const [user, setUser] = useState({});
   const createNewProfile = async () => {
-    axios.post(`${serverBaseUrl}/start`, { name: 'dev' }).then((res) => {
+    axios.post(`${serverBaseUrl}/start`, { name: 'player' }).then((res) => {
       setProfile(res.data.profile);
       localStorage.setItem('profile', res.data.profile);
     });
