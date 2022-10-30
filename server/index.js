@@ -94,7 +94,7 @@ app.post('/combat', (req, res) => {
   const hit = (attacker, defender) => {
     const damage = attacker.att * (1 - defender.def);
     defender.hp -= damage;
-    return { attacker: hitter.name, damage, hpLeft: defender.hp };
+    return { attacker: attacker.name, damage, hpLeft: defender.hp };
   };
 
   const createCombatLog = (attacker, defender) => {
