@@ -11,15 +11,15 @@ const Home = () => {
   const [user, setUser] = useState(localStorage.getItem('user'));
 
   useEffect(() => {
-    if (!user || user === 'undefined') {
-      console.log('no user');
+    if (!user?.profile) {
+      console.log('Creating new user');
       axios.post(`${serverBaseUrl}/start`, { name: 'dev' }).then((res) => {
         setUser(res.data);
         console.log(res.data);
+        localStorage.setItem('user', JSON.stringify(user));
       });
     }
-    localStorage.setItem('user', JSON.stringify(user));
-    console.log(user);
+    console.log('Current user:', user);
   }, [user]);
 
   const navigate = useNavigate();
