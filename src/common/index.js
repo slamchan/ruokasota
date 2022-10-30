@@ -9,7 +9,6 @@ import { serverBaseUrl } from './Constants';
 
 const Home = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
-
   useEffect(() => {
     if (!user?.profile) {
       console.log('Creating new user');
