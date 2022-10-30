@@ -16,7 +16,8 @@ app.use((req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3001;
-const key = crypto.randomBytes(32);
+const secret = 'someamazingsecret';
+const key = crypto.scryptSync(secret, 'GfG', 24);
 const iv = crypto.randomBytes(16);
 
 const encrypt = data => {
