@@ -68,13 +68,11 @@ app.post('/purchase', async (req, res) => {
   const { profile, fighter } = req.body;
   const profileData = deCrypt(profile);
 
-  const fighters = await axios
-    .get(`https://fineli.fi/fineli/api/v1/foods?q=${fighter.id}`)
-    .then(res => createFighter(res.data).filter(f => f.id === fighter.id))
-    .catch(e => new Error(e));
-  if (fighters[0].price <= profile.money) {
-    profileData.money -= fighters[0].price;
-    profileData.fighters.push(fighters[0]);
+  const { data } = await axios.get(`https://fineli.fi/fineli/api/v1/foods?q=${fighter.id}`).catch(e => new Error(e));
+  const fetchedFighter = createFighter(data).filter(f => f.id === fighter.id)[0];
+  if (fetchedFighter.price <= profile.money) {
+    profileData.money -= fetchedFighter.price;
+    profileData.fighters.push(fighter);
   }
 
   // TODO save to db
