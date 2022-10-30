@@ -94,7 +94,7 @@ app.post('/combat', (req, res) => {
   const hit = (attacker, defender) => {
     const damage = attacker.att * (1 - defender.def);
     defender.hp -= damage;
-    return { attacker: attacker.name, damage, hpLeft: defender.hp };
+    return { attacker: hitter.name, damage, hpLeft: defender.hp };
   };
 
   const createCombatLog = (attacker, defender) => {
@@ -102,7 +102,10 @@ app.post('/combat', (req, res) => {
     const log = [];
     while (defender.hp > 0) {
       turns++;
-      log.push({ ...hit(attacker, defender), timeStamp: attacker.delay * turns });
+      log.push({
+        ...hit(attacker, defender),
+        timeStamp: attacker.delay * turns,
+      });
     }
     return { log, time: turns * attacker.delay };
   };
