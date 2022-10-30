@@ -57,7 +57,7 @@ const ShopView = (props) => {
           >
             Etsi
           </Button>
-          <div className="p-2 font-semibold">{`Raha: ${user.money.toFixed(
+          <div className="p-2 font-semibold">{`Raha: ${user?.money?.toFixed(
             2
           )}€`}</div>
         </div>
@@ -66,7 +66,7 @@ const ShopView = (props) => {
             return (
               <FighterCard
                 fighter={fighter}
-                buttonText={`Osta: ${fighter.price.toFixed(2)}€`}
+                buttonText={`Osta: ${fighter?.price?.toFixed(2)}€`}
                 onClick={buyFighter}
                 key={fighter.name}
               />
