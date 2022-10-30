@@ -5,13 +5,13 @@ import axios from 'axios';
 import { TextField, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 
-const ShopView = (props) => {
+const ShopView = props => {
   ShopView.propTypes = {
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    setProfile: PropTypes.func.isRequired,
   };
 
   const { user, setProfile } = props;
-  console.log(user);
   const [fighters, setFighters] = useState([]);
   const [query, setQuery] = useState('');
 
@@ -20,14 +20,14 @@ const ShopView = (props) => {
   }, [fighters]);
 
   const searchFighters = () => {
-    axios.get(`${serverBaseUrl}/getCarrots/${query}`).then((res) => {
+    axios.get(`${serverBaseUrl}/getCarrots/${query}`).then(res => {
       setFighters(res.data);
     });
   };
-  const buyFighter = async (fighter) => {
+  const buyFighter = async fighter => {
     const { data } = await axios.post(`${serverBaseUrl}/purchase`, {
       profile,
-      fighter
+      fighter,
     });
     setFighters([]);
     setQuery('');
@@ -44,7 +44,7 @@ const ShopView = (props) => {
             variant="outlined"
             type="search"
             size="small"
-            onChange={(e) => {
+            onChange={e => {
               setQuery(e.target.value);
             }}
             value={query}
@@ -57,12 +57,10 @@ const ShopView = (props) => {
           >
             Etsi
           </Button>
-          <div className="p-2 font-semibold">{`Raha: ${user?.money?.toFixed(
-            2
-          )}€`}</div>
+          <div className="p-2 font-semibold">{`Raha: ${user?.money?.toFixed(2)}€`}</div>
         </div>
         <div className="flex flex-row flex-wrap overflow-auto justify-start">
-          {fighters.map((fighter) => {
+          {fighters.map(fighter => {
             return (
               <FighterCard
                 fighter={fighter}
