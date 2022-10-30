@@ -9,6 +9,7 @@ const BattleView = (props) => {
   BattleView.propTypes = {
     user: PropTypes.object.isRequired
   };
+  const profile = localStorage.getItem('profile');
   const { user } = props;
   const [fighter, setFighter] = useState(undefined);
   const [battleResult, setBattleResult] = useState(undefined);
@@ -20,10 +21,11 @@ const BattleView = (props) => {
       .post(`${serverBaseUrl}/combat`, {
         attacker: fighter,
         defender: enemyFighter,
-        user: user.id
+        profile: profile.trim()
       })
       .then((res) => {
         setBattleResult(res.data);
+        localStorage.setItem('profile', res.data.profile);
         console.log(battleResult);
         setResultsOpen(true);
       });
