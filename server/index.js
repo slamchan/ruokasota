@@ -17,19 +17,19 @@ app.use((req, res, next) => {
 
 const PORT = process.env.PORT || 3001;
 const secret = 'someamazingsecret';
-const key = crypto.scryptSync(secret, 'GfG', 24);
+const key = crypto.scryptSync(secret, 'GfG', 32);
 const iv = crypto.randomBytes(16);
 
 const encrypt = data => {
-  const mykey = crypto.createCipheriv('aes-256-cbc', key, iv);
-  let cryptedData = mykey.update(JSON.stringify(data), 'utf8', 'hex');
-  return (cryptedData += mykey.final('hex'));
+  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+  let cryptedData = cipher.update(JSON.stringify(data), 'utf8', 'hex');
+  return (cryptedData += cipher.final('hex'));
 };
 
 const deCrypt = data => {
-  const mykey = crypto.createDecipheriv('aes-256-cbc', key, iv);
-  let cryptedData = mykey.update(data, 'hex', 'utf8');
-  return (cryptedData += mykey.final('utf8'));
+  const cipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+  let cryptedData = cipher.update(data, 'hex', 'utf8');
+  return (cryptedData += cipher.final('utf8'));
 };
 
 const createFighter = unhandledFoods =>
