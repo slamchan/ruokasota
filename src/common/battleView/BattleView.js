@@ -27,7 +27,10 @@ const BattleView = props => {
   };
 
   const doBattle = enemy => {
-    console.log(fighter, enemy, user);
+    if (!fighter) {
+      alert('Valitse oma taistelija');
+      return;
+    }
     axios
       .post(`${serverBaseUrl}/combat`, {
         attacker: fighter,
@@ -39,7 +42,6 @@ const BattleView = props => {
         setBattleResult(res.data);
         localStorage.setItem('profile', res.data.profile);
         setProfile(res.data.profile);
-        console.log(res.data);
         setResultsOpen(true);
       });
   };
@@ -113,7 +115,7 @@ const BattleView = props => {
           <div>
             <TextField
               className="bg-white"
-              label="Etsi"
+              label="Etsi vastustaja"
               type="search"
               size="small"
               onChange={e => searchEnemyFighter(e.target.value)}
