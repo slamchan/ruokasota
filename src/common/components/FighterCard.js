@@ -3,33 +3,31 @@ import PropTypes from 'prop-types';
 import { baseSpeed, speedMultiplier } from '../Constants';
 import { Button } from '@mui/material';
 
-const FighterCard = (props) => {
+const FighterCard = props => {
   FighterCard.propTypes = {
     fighter: PropTypes.object.isRequired,
     buttonText: PropTypes.string,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
   };
 
   FighterCard.defaultPropTypes = {
     fighter: {},
     buttonText: undefined,
-    onClick: undefined
+    onClick: undefined,
   };
 
-  const attackSpeed = (delay) => {
+  const attackSpeed = delay => {
     return (baseSpeed / delay) * speedMultiplier;
   };
 
   const { fighter, buttonText, onClick } = props;
 
-  const Tablecell = (props) => {
+  const Tablecell = props => {
     Tablecell.propTypes = {
-      content: PropTypes.string.isRequired
+      content: PropTypes.string.isRequired,
     };
     const { content } = props;
-    return (
-      <td className="border border-slate-600 pr-2 pl-2 bg-white">{content}</td>
-    );
+    return <td className="border border-slate-600 pr-2 pl-2 bg-white">{content}</td>;
   };
 
   if (fighter.delay > 0 && fighter.att > 0 && fighter.hp > 0) {
@@ -71,7 +69,6 @@ const FighterCard = (props) => {
       </div>
     );
   }
-  return;
 };
 
 export default FighterCard;

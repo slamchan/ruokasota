@@ -11,10 +11,7 @@ app.use(bodyParser.json());
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-Requested-With,content-type'
-  );
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   next();
 });
 
@@ -23,7 +20,7 @@ const secret = 'someamazingsecret';
 const key = crypto.scryptSync(secret, 'GfG', 32);
 const iv = crypto.scryptSync(secret, 'GfG', 16);
 
-const encrypt = (data) => {
+const encrypt = data => {
   if (!data) return;
   const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
   let encrypted = cipher.update(JSON.stringify(data));
@@ -31,7 +28,7 @@ const encrypt = (data) => {
   return encrypted.toString('hex');
 };
 
-const deCrypt = (data) => {
+const deCrypt = data => {
   if (!data) return;
   const cryptedData = Buffer.from(data, 'hex');
   const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
@@ -40,7 +37,7 @@ const deCrypt = (data) => {
   return JSON.parse(decrypted.toString('utf-8'));
 };
 
-const createFighter = (unhandledFoods) =>
+const createFighter = unhandledFoods =>
   unhandledFoods.map(({ id, name, energy, protein, fat, carbohydrate }) => ({
     id,
     name: name.fi,
@@ -48,15 +45,13 @@ const createFighter = (unhandledFoods) =>
     def: protein,
     delay: protein + fat + carbohydrate,
     att: carbohydrate,
-    price: (protein + fat + carbohydrate) * energy
+    price: (protein + fat + carbohydrate) * energy,
   }));
 
 // GET method route
 app.get('/getCarrots/:query', async (req, res) => {
   const query = req.params.query;
-  const { data } = await axios
-    .get(`https://fineli.fi/fineli/api/v1/foods?q=${query}`)
-    .catch((e) => new Error(e));
+  const { data } = await axios.get(`https://fineli.fi/fineli/api/v1/foods?q=${query}`).catch(e => new Error(e));
   res.send(createFighter(data));
 });
 
@@ -75,12 +70,8 @@ app.post('/purchase', async (req, res) => {
   const { profile, fighter } = req.body;
   const profileData = deCrypt(profile);
 
-  const { data } = await axios
-    .get(`https://fineli.fi/fineli/api/v1/foods?q=${fighter.id}`)
-    .catch((e) => new Error(e));
-  const fetchedFighter = createFighter(data).filter(
-    (f) => f.id === fighter.id
-  )[0];
+  const { data } = await axios.get(`https://fineli.fi/fineli/api/v1/foods?q=${fighter.id}`).catch(e => new Error(e));
+  const fetchedFighter = createFighter(data).filter(f => f.id === fighter.id)[0];
   if (fetchedFighter.price <= profileData.money) {
     profileData.money -= fetchedFighter.price;
     profileData.fighters.push(fetchedFighter);
@@ -95,7 +86,7 @@ app.post('/combat', (req, res) => {
   const profileData = deCrypt(profile);
   console.log({ profileData });
   const hit = (attacker, defender) => {
-    const damage = attacker.att * (1 - defender.def);
+    const damage = attacker.att * (100 - defender.def);
     defender.hp -= damage;
     return { attacker: attacker.name, damage, hpLeft: defender.hp };
   };
@@ -107,7 +98,7 @@ app.post('/combat', (req, res) => {
       turns++;
       log.push({
         ...hit(attacker, defender),
-        timeStamp: attacker.delay * turns
+        timeStamp: attacker.delay * turns,
       });
     }
     return { log, time: turns * attacker.delay };
@@ -119,13 +110,9 @@ app.post('/combat', (req, res) => {
   // TODO save to db
   attackerLog.time < defenderLog.time
     ? (profileData.money += defender.price / 4)
-    : (profileData.fighters = profileData.fighters.filter(
-        (fighter) => fighter.id !== attacker.id
-      ));
+    : (profileData.fighters = profileData.fighters.filter(fighter => fighter.id !== attacker.id));
 
-  const combatLog = attackerLog.log
-    .concat(defenderLog.log)
-    .sort((a, b) => a.time - b.time);
+  const combatLog = attackerLog.log.concat(defenderLog.log).sort((a, b) => a.time - b.time);
 
   res.send({ combatLog, profile: encrypt(profileData) });
 });
@@ -133,9 +120,7 @@ app.post('/combat', (req, res) => {
 app.delete('/eat', (req, res) => {
   const { profile, fighterId } = req.query;
   const profileData = deCrypt(profile);
-  profileData.fighters = profileData.fighters.filter(
-    (f) => f.id.toString() !== fighterId
-  );
+  profileData.fighters = profileData.fighters.filter(f => f.id.toString() !== fighterId);
 
   // TODO save to db
   res.send({ profile: encrypt(profileData) });
