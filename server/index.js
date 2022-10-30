@@ -22,14 +22,17 @@ const iv = crypto.randomBytes(16);
 
 const encrypt = data => {
   const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
-  let cryptedData = cipher.update(JSON.stringify(data), 'utf8', 'hex');
-  return (cryptedData += cipher.final('hex'));
+  let encrypted = cipher.update(JSON.stringify(data));
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  return encrypted.toString('hex');
 };
 
 const deCrypt = data => {
-  const cipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
-  let cryptedData = cipher.update(data, 'hex', 'utf8');
-  return (cryptedData += cipher.final('utf8'));
+  const cryptedData = Buffer.from(data, 'hex');
+  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
+  let decrypted = decipher.update(cryptedData);
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+  return JSON.parse(decrypted.toString());
 };
 
 const createFighter = unhandledFoods =>
@@ -46,11 +49,8 @@ const createFighter = unhandledFoods =>
 // GET method route
 app.get('/getCarrots/:query', async (req, res) => {
   const query = req.params.query;
-
-  await axios
-    .get(`https://fineli.fi/fineli/api/v1/foods?q=${query}`)
-    .then(res => res.send(createFighter(res.data)))
-    .catch(e => res.send(new Error(e)));
+  const { data } = await axios.get(`https://fineli.fi/fineli/api/v1/foods?q=${query}`).catch(e => new Error(e));
+  res.send(createFighter(data));
 });
 
 app.get('/getProfile', async (req, res) => {
@@ -84,7 +84,7 @@ app.post('/purchase', async (req, res) => {
 app.post('/combat', (req, res) => {
   const { attacker, defender, profile } = req.body;
   const profileData = deCrypt(profile);
-
+  console.log({ profileData });
   const hit = (attacker, defender) => {
     const damage = attacker.att * (1 - defender.def);
     defender.hp -= damage;
