@@ -8,16 +8,19 @@ import axios from 'axios';
 import { serverBaseUrl } from './Constants';
 
 const Home = () => {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+  const [profile, setProfile] = useState(
+    JSON.parse(localStorage.getItem('profile'))
+  );
   useEffect(() => {
-    if (!user?.profile) {
-      console.log('Creating new user');
+    if (!profile) {
+      console.log('Creating new profile');
       axios.post(`${serverBaseUrl}/start`, { name: 'dev' }).then((res) => {
-        setUser(res.data);
-        localStorage.setItem('user', JSON.stringify(res.data));
+        setProfile(res.data.profile);
+        localStorage.setItem('profile', JSON.stringify(res.data.profile));
       });
     }
   }, []);
+  const user = {}; //temp
 
   const navigate = useNavigate();
   return (
