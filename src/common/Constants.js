@@ -1,5 +1,5 @@
 export const baseSpeed = 1;
-export const speedMultiplier = 3;
+export const speedMultiplier = 10;
 
 export const testFighter = {
   hp: 33.0,

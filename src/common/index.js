@@ -10,8 +10,8 @@ const Home = () => {
   const user = { id: 0, money: 666 };
   return (
     <React.Fragment>
-      <div className="bg-cyan-200 h-screen flex flex-row">
-        <div className="container basis-1/6">
+      <div className="bg-slate-600 h-screen flex flex-row">
+        <div className="container basis-1/6 border-r-2 border-slate-700">
           <Button
             variant="contained"
             className="w-full"

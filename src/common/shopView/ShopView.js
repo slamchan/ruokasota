@@ -23,8 +23,8 @@ const ShopView = (props) => {
   };
   return (
     <React.Fragment>
-      <div className="bg-cyan-300 basis-5/6 h-full flex-col flex">
-        <div className="bg-cyan-100 flex gap-2 p-2 border border-slate-500">
+      <div className="basis-5/6 h-full flex-col flex">
+        <div className="bg-white flex gap-2 p-2">
           <TextField
             id="nameSearch"
             label="Etsi"
@@ -50,7 +50,7 @@ const ShopView = (props) => {
             return (
               <FighterCard
                 fighter={fighter}
-                shop
+                view="shop"
                 onClick={buyFighter}
                 key={fighter.name}
               />
