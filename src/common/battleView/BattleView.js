@@ -1,30 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import FighterCard from '../components/FighterCard';
-import { testFighter, testEnemyFighter, serverBaseUrl } from '../Constants';
+import { serverBaseUrl } from '../Constants';
+import { TextField, Modal } from '@mui/material';
+
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { Modal } from '@mui/material';
 
-const BattleView = (props) => {
+const BattleView = props => {
   BattleView.propTypes = {
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    setProfile: PropTypes.func.isRequired,
   };
   const profile = localStorage.getItem('profile');
   const { user, setProfile } = props;
   const [fighter, setFighter] = useState(undefined);
+  const [enemy, setEnemy] = useState(undefined);
+
   const [enemyFighter, setEnemyFighter] = useState(undefined);
   const [battleResult, setBattleResult] = useState(undefined);
   const [resultsOpen, setResultsOpen] = useState(false);
 
-  const doBattle = (enemy) => {
+  const searchEnemyFighter = async query => {
+    await axios.get(`${serverBaseUrl}/getCarrots/${query}`).then(res => {
+      setEnemy(res.data[0]);
+    });
+  };
+
+  const doBattle = enemy => {
     console.log(fighter, enemy, user);
     axios
       .post(`${serverBaseUrl}/combat`, {
         attacker: fighter,
         defender: enemy,
-        profile: profile.trim()
+        profile: profile.trim(),
       })
-      .then((res) => {
+      .then(res => {
         setEnemyFighter(enemy);
         setBattleResult(res.data);
         localStorage.setItem('profile', res.data.profile);
@@ -35,7 +45,7 @@ const BattleView = (props) => {
   };
 
   const findFirstDeath = () => {
-    const deaths = battleResult?.combatLog.filter((x) => x.hpLeft <= 0);
+    const deaths = battleResult?.combatLog.filter(x => x.hpLeft <= 0);
     return deaths?.sort((a, b) => a - b)[0];
   };
 
@@ -58,60 +68,36 @@ const BattleView = (props) => {
                 <div>
                   {battleResult?.combatLog
                     ?.sort((a, b) => a.timeStamp - b.timeStamp)
-                    .map((c) => {
-                      if (
-                        c.timeStamp <= findFirstDeath().timeStamp &&
-                        c.attacker === fighter.name
-                      ) {
+                    .map(c => {
+                      if (c.timeStamp <= findFirstDeath().timeStamp && c.attacker === fighter.name) {
                         return (
                           <div className=" p-2">
-                            {`Hyökkääjä: ${
-                              c.attacker
-                            } -  Vahinko: ${c.damage.toFixed(
-                              2
-                            )} - Puolustajan (${
-                              battleResult?.combatLog.find(
-                                (x) => x.attacker !== c.attacker
-                              ).attacker
-                            }) elämää jäljellä: ${c.hpLeft.toFixed(
-                              2
-                            )} - Aika taistelun alusta: ${c.timeStamp.toFixed(
+                            {`Hyökkääjä: ${c.attacker} -  Vahinko: ${c.damage.toFixed(2)} - Puolustajan (${
+                              battleResult?.combatLog.find(x => x.attacker !== c.attacker).attacker
+                            }) elämää jäljellä: ${c.hpLeft.toFixed(2)} - Aika taistelun alusta: ${c.timeStamp.toFixed(
                               2
                             )}s`}
                           </div>
                         );
-                      }
-                      return;
+                      } else return null;
                     })}
                 </div>
                 <div>
                   {battleResult?.combatLog
                     ?.sort((a, b) => a.timeStamp - b.timeStamp)
-                    .map((c) => {
+                    .map(c => {
                       if (
-                        c.timeStamp <=
-                          findFirstDeath(battleResult?.combatLog).timeStamp &&
+                        c.timeStamp <= findFirstDeath(battleResult?.combatLog).timeStamp &&
                         c.attacker === enemyFighter.name
                       ) {
-                        return (
-                          <div className="p-2">
-                            {`Hyökkääjä: ${
-                              c.attacker
-                            } -  Vahinko: ${c.damage.toFixed(
-                              2
-                            )} - Puolustajan (${
-                              battleResult?.combatLog.find(
-                                (x) => x.attacker !== c.attacker
-                              ).attacker
-                            }) elämää jäljellä: ${c.hpLeft.toFixed(
-                              2
-                            )} - Aika taistelun alusta: ${c.timeStamp.toFixed(
-                              2
-                            )}s`}
-                          </div>
-                        );
-                      }
-                      return;
+                        <div className="p-2">
+                          {`Hyökkääjä: ${c.attacker} -  Vahinko: ${c.damage.toFixed(2)} - Puolustajan (${
+                            battleResult?.combatLog.find(x => x.attacker !== c.attacker).attacker
+                          }) elämää jäljellä: ${c.hpLeft.toFixed(2)} - Aika taistelun alusta: ${c.timeStamp.toFixed(
+                            2
+                          )}s`}
+                        </div>;
+                      } else return null;
                     })}
                 </div>
               </div>
@@ -120,25 +106,20 @@ const BattleView = (props) => {
         )}
 
         <div className="flex flex-row flex-wrap overflow-auto justify-start">
-          {user?.fighters?.map((x) => {
-            return (
-              <FighterCard
-                fighter={x}
-                buttonText="Valitse taistelija"
-                onClick={setFighter}
-              />
-            );
+          {user?.fighters?.map(x => {
+            return <FighterCard key={x.id} fighter={x} buttonText="Valitse taistelija" onClick={setFighter} />;
           })}
-          <FighterCard
-            fighter={testFighter}
-            buttonText="taistele!"
-            onClick={doBattle}
-          />
-          <FighterCard
-            fighter={testEnemyFighter}
-            buttonText="Taistele!"
-            onClick={doBattle}
-          />
+
+          <div>
+            <TextField
+              className="bg-white"
+              label="Etsi"
+              type="search"
+              size="small"
+              onChange={e => searchEnemyFighter(e.target.value)}
+            />
+            {enemy && <FighterCard fighter={enemy} buttonText="Taistele!" onClick={doBattle} />}
+          </div>
         </div>
       </div>
     </React.Fragment>
