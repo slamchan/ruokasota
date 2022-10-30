@@ -27,6 +27,7 @@ const BattleView = (props) => {
         setBattleResult(res.data);
         localStorage.setItem('profile', res.data.profile);
         console.log(battleResult);
+        console.log(battleResult.profile);
         setResultsOpen(true);
       });
   };
@@ -41,7 +42,7 @@ const BattleView = (props) => {
           }}
           className="flex justify-center items-center"
         >
-          <div className="bg-white h-2/3 w-2/3">asd</div>
+          <div className="bg-slate-600 h-2/3 w-2/3 p-2">asd</div>
         </Modal>
         <div className=" flex-row h-fit flex">
           <FighterCard

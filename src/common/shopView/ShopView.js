@@ -9,17 +9,22 @@ const ShopView = (props) => {
   ShopView.propTypes = {
     user: PropTypes.object.isRequired
   };
+  const profile = localStorage.getItem('profile');
   const { user } = props;
   const [fighters, setFighters] = useState([]);
   const [query, setQuery] = useState('');
   const searchFighters = () => {
-    console.log('fetchFighters');
-    axios
-      .get(`${serverBaseUrl}/getCarrots/${query}`)
-      .then((res) => setFighters(res.data));
+    axios.get(`${serverBaseUrl}/getCarrots/${query}`).then((res) => {
+      setFighters(res.data);
+    });
   };
   const buyFighter = (fighter) => {
-    console.log('Ostettu: ', fighter);
+    axios
+      .post(`${serverBaseUrl}/purchase`, { profile, fighter })
+      .then((res) => {
+        localStorage.setItem('profile', res.data.profile);
+      });
+    console.log('Bought: ', fighter);
   };
   return (
     <React.Fragment>
@@ -50,7 +55,7 @@ const ShopView = (props) => {
             return (
               <FighterCard
                 fighter={fighter}
-                buttonText={`Osta: ${fighter.price}€`}
+                buttonText={`Osta: ${fighter.price.toFixed(2)}€`}
                 onClick={buyFighter}
                 key={fighter.name}
               />
