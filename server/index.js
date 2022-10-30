@@ -25,9 +25,9 @@ const encrypt = data => {
 };
 
 const deCrypt = data => {
-  const mykey = crypto.createCipheriv('aes-128-cbc', secret);
-  let cryptedData = mykey.update(JSON.stringify(data), 'utf8', 'hex');
-  return (cryptedData += mykey.final('hex'));
+  const mykey = crypto.createDecipheriv('aes-128-cbc', secret);
+  let cryptedData = mykey.update(data, 'hex', 'utf8');
+  return (cryptedData += mykey.final('utf8'));
 };
 
 const createFighter = unhandledFoods =>
@@ -45,12 +45,14 @@ const createFighter = unhandledFoods =>
 app.get('/getCarrots/:query', async (req, res) => {
   const query = req.params.query;
 
-  const data = await axios
+  await axios
     .get(`https://fineli.fi/fineli/api/v1/foods?q=${query}`)
-    .then(res => createFighter(res.data))
-    .catch(e => new Error(e));
+    .then(res => res.send(createFighter(res.data)))
+    .catch(e => res.send(new Error(e)));
+});
 
-  res.send(data);
+app.get('/getProfile', async (req, res) => {
+  res.send({ profile: encrypt(req.body.profile) });
 });
 
 app.post('/start', (req, res) => {
@@ -69,26 +71,16 @@ app.post('/purchase', async (req, res) => {
     .then(res => createFighter(res.data).filter(f => f.id === fighter.id))
     .catch(e => new Error(e));
   if (fighters[0].price <= profile.money) {
+    profileData.money -= fighters[0].price;
     profileData.fighters.push(fighters[0]);
   }
 
   // TODO save to db
   res.send({ profile: encrypt(profileData) });
 });
-
-app.delete('/eat', (req, res) => {
-  const { profile, fighter } = req.params;
-  const profileData = deCrypt(profile);
-  profileData.fighters.filter(f => f.name !== fighter.name);
-
-  // TODO save to db
-  res.send({ profile: encrypt(profileData) });
-});
-
 // POST method route
 app.post('/combat', (req, res) => {
   const { attacker, defender, profile } = req.body;
-
   const profileData = deCrypt(profile);
 
   const hit = (attacker, defender) => {
@@ -121,6 +113,15 @@ app.post('/combat', (req, res) => {
   const combatLog = attackerLog.log.concat(defenderLog.log).sort((a, b) => a.time - b.time);
 
   res.send({ combatLog, profile: encrypt(profileData) });
+});
+
+app.delete('/eat', (req, res) => {
+  const { profile, fighter } = req.params;
+  const profileData = deCrypt(profile);
+  profileData.fighters.filter(f => f.name !== fighter.name);
+
+  // TODO save to db
+  res.send({ profile: encrypt(profileData) });
 });
 
 app.listen(PORT, () => {
