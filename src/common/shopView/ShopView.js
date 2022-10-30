@@ -43,14 +43,14 @@ const ShopView = (props) => {
           >
             Etsi
           </Button>
-          <div className="p-2 font-semibold">{`Raha: ${user.money}$`}</div>
+          <div className="p-2 font-semibold">{`Raha: ${user.money}€`}</div>
         </div>
         <div className="flex flex-row flex-wrap overflow-auto justify-start">
           {fighters.map((fighter) => {
             return (
               <FighterCard
                 fighter={fighter}
-                view="shop"
+                buttonText={`Osta: ${fighter.price}€`}
                 onClick={buyFighter}
                 key={fighter.name}
               />
