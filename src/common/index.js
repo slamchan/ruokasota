@@ -10,13 +10,16 @@ import { serverBaseUrl } from './Constants';
 const Home = () => {
   const [profile, setProfile] = useState(localStorage.getItem('profile'));
   const [user, setUser] = useState({});
+  const createNewProfile = async () => {
+    axios.post(`${serverBaseUrl}/start`, { name: 'dev' }).then((res) => {
+      setProfile(res.data.profile);
+      localStorage.setItem('profile', res.data.profile);
+    });
+  };
+
   useEffect(() => {
     if (!profile) {
-      console.log('Creating new profile');
-      axios.post(`${serverBaseUrl}/start`, { name: 'dev' }).then((res) => {
-        setProfile(res.data.profile);
-        localStorage.setItem('profile', res.data.profile);
-      });
+      createNewProfile();
     }
   }, []);
 
@@ -28,13 +31,16 @@ const Home = () => {
     }
   }, [profile]);
 
-  console.log(user);
+  const resetProfile = async () => {
+    localStorage.clear();
+    await createNewProfile();
+  };
 
   const navigate = useNavigate();
   return (
     <React.Fragment>
       <div className="bg-slate-600 h-screen flex flex-row">
-        <div className="container basis-1/6 border-r-2 border-slate-700">
+        <div className="container basis-1/6 border-r-2 border-slate-700 flex flex-col">
           <Button
             variant="contained"
             className="w-full"
@@ -56,6 +62,15 @@ const Home = () => {
           >
             Taistelijat
           </Button>
+          <div className="mt-10">
+            <Button
+              variant="contained"
+              className="w-full"
+              onClick={() => resetProfile()}
+            >
+              Nollaa profiili
+            </Button>
+          </div>
         </div>
         <Routes>
           <Route
