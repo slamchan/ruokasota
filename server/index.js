@@ -2,28 +2,42 @@
 
 const express = require('express');
 const axios = require('axios');
+const bodyParser = require('body-parser');
+const crypto = require('crypto');
 
 const PORT = process.env.PORT || 3001;
+const secret = 'abcdefg';
 
 const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-Requested-With,content-type'
-  );
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   next();
 });
+
+const encrypt = data => {
+  const mykey = crypto.createCipher('aes-128-cbc', secret);
+  let cryptedData = mykey.update(JSON.stringify(data), 'utf8', 'hex');
+  return (cryptedData += mykey.final('hex'));
+};
+
+const deCrypt = data => {
+  const mykey = crypto.createCipher('aes-128-cbc', secret);
+  let cryptedData = mykey.update(JSON.stringify(data), 'utf8', 'hex');
+  return (cryptedData += mykey.final('hex'));
+};
 
 // GET method route
 app.get('/getCarrots/:query', async (req, res) => {
   const query = req.params.query;
   const data = await axios
     .get(`https://fineli.fi/fineli/api/v1/foods?q=${query}`)
-    .then((res) => {
-      const headerDate =
-        res.headers && res.headers.date ? res.headers.date : 'no response date';
+    .then(res => {
+      const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
       console.log('Status Code:', res.status);
       console.log('Date in Response header:', headerDate);
 
@@ -32,10 +46,11 @@ app.get('/getCarrots/:query', async (req, res) => {
         hp: energy,
         def: protein,
         delay: protein + fat + carbohydrate,
-        att: carbohydrate
+        att: carbohydrate,
+        price: (protein + fat + carbohydrate) * energy,
       }));
     })
-    .catch((err) => {
+    .catch(err => {
       console.log('Error: ', err.message);
     });
 
@@ -48,32 +63,28 @@ app.get('/load', (req, res) => {
 
 // POST method route
 app.post('/combat', (req, res) => {
-  const { attacker, defender } = req;
+  const { attacker, defender, profile } = req.body;
   const hit = (hitter, defender) => {
     const damage = hitter.att * (1 - defender.def);
     defender.hp -= damage;
     return { attacker: attacker.name, damage, hpLeft: defender.hp };
   };
 
-  const victoryTime = (attacker, defender) => {
+  const createCombatLog = (attacker, defender) => {
     let turns = 0;
-    const combatLog = [];
+    const log = [];
     while (defender.hp > 0) {
       turns++;
-      combatLog.push({
-        ...hit(attacker, defender),
-        timeStamp: attacker.delay * turns
-      });
+      log.push({ ...hit(attacker, defender), timeStamp: attacker.delay * turns });
     }
-    return { combatLog, time: turns * attacker.delay };
+    return { log, time: turns * attacker.delay };
   };
 
-  const attackerLog = victoryTime(attacker, defender);
-  const defenderLog = victoryTime(defender, attacker);
-  const combatLog = attackerLog.combatLog
-    .concat(defenderLog)
-    .sort((a, b) => a.time - b.time);
+  const attackerLog = createCombatLog(attacker, defender);
+  const defenderLog = createCombatLog(defender, attacker);
+  const combatLog = attackerLog.log.concat(defenderLog.log).sort((a, b) => a.time - b.time);
 
+  console.log({ combatLog });
   res.send({ combatLog });
 });
 
