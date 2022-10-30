@@ -1,3 +1,8 @@
+## About the project
+
+Technologies used were ReactJS for frontend and NodeJS for backend
+Only tested operating system for running is Windows 10
+
 ## Available Scripts
 
 In the project directory, you can run:
