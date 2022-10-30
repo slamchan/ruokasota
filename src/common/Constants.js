@@ -12,7 +12,7 @@ export const testEnemyFighter = {
   hp: 65.0,
   att: 7.6,
   def: 0.2,
-  delay: 6,
+  delay: 0.3,
   name: 'Pottu'
 };
 export const serverBaseUrl = 'http://localhost:3001';
