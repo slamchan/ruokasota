@@ -119,7 +119,9 @@ app.post('/combat', (req, res) => {
   // TODO save to db
   attackerLog.time < defenderLog.time
     ? (profileData.money += defender.price / 4)
-    : profileData.fighters.filter((fighter) => fighter.name !== attacker.name);
+    : (profileData.fighters = profileData.fighters.filter(
+        (fighter) => fighter.id !== attacker.id
+      ));
 
   const combatLog = attackerLog.log
     .concat(defenderLog.log)

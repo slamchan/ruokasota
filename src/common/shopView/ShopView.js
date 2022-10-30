@@ -57,7 +57,9 @@ const ShopView = (props) => {
           >
             Etsi
           </Button>
-          <div className="p-2 font-semibold">{`Raha: ${user.money}€`}</div>
+          <div className="p-2 font-semibold">{`Raha: ${user.money.toFixed(
+            2
+          )}€`}</div>
         </div>
         <div className="flex flex-row flex-wrap overflow-auto justify-start">
           {fighters.map((fighter) => {
