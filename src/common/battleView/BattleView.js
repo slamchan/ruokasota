@@ -10,7 +10,7 @@ const BattleView = (props) => {
     user: PropTypes.object.isRequired
   };
   const profile = localStorage.getItem('profile');
-  const { user } = props;
+  const { user, setProfile } = props;
   const [fighter, setFighter] = useState(undefined);
   const [enemyFighter, setEnemyFighter] = useState(undefined);
   const [battleResult, setBattleResult] = useState(undefined);
@@ -28,6 +28,7 @@ const BattleView = (props) => {
         setEnemyFighter(enemy);
         setBattleResult(res.data);
         localStorage.setItem('profile', res.data.profile);
+        setProfile(res.data.profile);
         console.log(res.data);
         setResultsOpen(true);
       });
@@ -118,11 +119,20 @@ const BattleView = (props) => {
           </Modal>
         )}
 
-        <div className=" flex-row h-fit flex">
+        <div className="flex flex-row flex-wrap overflow-auto justify-start">
+          {user?.fighters?.map((x) => {
+            return (
+              <FighterCard
+                fighter={x}
+                buttonText="Valitse taistelija"
+                onClick={setFighter}
+              />
+            );
+          })}
           <FighterCard
             fighter={testFighter}
-            buttonText="Valitse taistelija"
-            onClick={setFighter}
+            buttonText="taistele!"
+            onClick={doBattle}
           />
           <FighterCard
             fighter={testEnemyFighter}

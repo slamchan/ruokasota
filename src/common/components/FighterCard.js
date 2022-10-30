@@ -32,43 +32,46 @@ const FighterCard = (props) => {
     );
   };
 
-  return (
-    <div className="container w-60 p-2">
-      <div className="container p-2 border-slate-600 bg-white h-full flex flex-col justify-between gap-1">
-        <h1 className="font-bold basis-1/2">{fighter.name}</h1>
-        <table className="table-auto border-separate item-spacing-1 border-slate-600 border bg-slate-600">
-          <tbody>
-            <tr>
-              <Tablecell content="Elämä:" />
-              <Tablecell content={fighter.hp.toFixed(2)} />
-            </tr>
-            <tr>
-              <Tablecell content="Hyökkäys:" />
-              <Tablecell content={fighter.att.toFixed(2)} />
-            </tr>
-            <tr>
-              <Tablecell content="Puolustus:" />
-              <Tablecell content={fighter.def.toFixed(2)} />
-            </tr>
-            <tr>
-              <Tablecell content="Hyökkäysnopeus:" />
-              <Tablecell content={attackSpeed(fighter.delay).toFixed(2)} />
-            </tr>
-          </tbody>
-        </table>
-        {buttonText && (
-          <Button
-            variant="contained"
-            onClick={() => {
-              onClick(fighter);
-            }}
-          >
-            {buttonText}
-          </Button>
-        )}
+  if (fighter.delay > 0 && fighter.att > 0 && fighter.hp > 0) {
+    return (
+      <div className="container w-60 p-2">
+        <div className="container p-2 border-slate-600 bg-white h-full flex flex-col justify-between gap-1">
+          <h1 className="font-bold basis-1/2">{fighter.name}</h1>
+          <table className="table-auto border-separate item-spacing-1 border-slate-600 border bg-slate-600">
+            <tbody>
+              <tr>
+                <Tablecell content="Elämä:" />
+                <Tablecell content={fighter.hp.toFixed(2)} />
+              </tr>
+              <tr>
+                <Tablecell content="Hyökkäys:" />
+                <Tablecell content={fighter.att.toFixed(2)} />
+              </tr>
+              <tr>
+                <Tablecell content="Puolustus:" />
+                <Tablecell content={fighter.def.toFixed(2)} />
+              </tr>
+              <tr>
+                <Tablecell content="Hyökkäysnopeus:" />
+                <Tablecell content={attackSpeed(fighter.delay).toFixed(2)} />
+              </tr>
+            </tbody>
+          </table>
+          {buttonText && (
+            <Button
+              variant="contained"
+              onClick={() => {
+                onClick(fighter);
+              }}
+            >
+              {buttonText}
+            </Button>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+  return;
 };
 
 export default FighterCard;
