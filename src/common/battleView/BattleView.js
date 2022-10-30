@@ -92,13 +92,15 @@ const BattleView = props => {
                         c.timeStamp <= findFirstDeath(battleResult?.combatLog).timeStamp &&
                         c.attacker === enemyFighter.name
                       ) {
-                        <div className="p-2">
-                          {`Hyökkääjä: ${c.attacker} -  Vahinko: ${c.damage.toFixed(2)} - Puolustajan (${
-                            battleResult?.combatLog.find(x => x.attacker !== c.attacker).attacker
-                          }) elämää jäljellä: ${c.hpLeft.toFixed(2)} - Aika taistelun alusta: ${c.timeStamp.toFixed(
-                            2
-                          )}s`}
-                        </div>;
+                        return (
+                          <div className="p-2">
+                            {`Hyökkääjä: ${c.attacker} -  Vahinko: ${c.damage.toFixed(2)} - Puolustajan (${
+                              battleResult?.combatLog.find(x => x.attacker !== c.attacker).attacker
+                            }) elämää jäljellä: ${c.hpLeft.toFixed(2)} - Aika taistelun alusta: ${c.timeStamp.toFixed(
+                              2
+                            )}s`}
+                          </div>
+                        );
                       } else return null;
                     })}
                 </div>
