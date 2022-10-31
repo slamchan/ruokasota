@@ -8,6 +8,9 @@ them for a price. Then they battle other foods and gain more money for winning. 
 can also eat their food-fighters, if they don't want to have them anymore. All progress
 is encrypted and saved to browsers local storage. Time was not on our side.
 
+Install modules:
+### `npm install`
+
 ## Available Scripts
 
 To start the project run commands:
